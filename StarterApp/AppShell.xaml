@@ -3,15 +3,18 @@
     x:Class="StarterApp.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:views="clr-namespace:StarterApp.Views"
-    Shell.FlyoutBehavior="Disabled">
+    xmlns:views="clr-namespace:StarterApp.Views">
 
-    <ShellContent ContentTemplate="{DataTemplate views:LoginPage}" />
+    <FlyoutItem Title="Main">
 
+        <ShellContent
+            Title="Dashboard"
+            ContentTemplate="{DataTemplate views:MainPage}" />
 
-    <ShellContent
-        Title="Items"
-        ContentTemplate="{DataTemplate views:ItemsListPage}" />
+        <ShellContent
+            Title="Items"
+            ContentTemplate="{DataTemplate views:ItemsListPage}" />
 
+    </FlyoutItem>
 
 </Shell>
