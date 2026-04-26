@@ -8,4 +8,10 @@
 
     <ShellContent ContentTemplate="{DataTemplate views:LoginPage}" />
 
+
+    <ShellContent
+        Title="Items"
+        ContentTemplate="{DataTemplate views:ItemsListPage}" />
+
+
 </Shell>
