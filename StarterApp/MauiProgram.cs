@@ -52,7 +52,8 @@ public static class MauiProgram
         builder.Services.AddScoped<IRentalService, RentalService>();
         builder.Services.AddTransient<RequestRentalViewModel>();
         builder.Services.AddTransient<RequestRentalPage>();
-        
+        builder.Services.AddTransient<RentalsViewModel>();
+        builder.Services.AddTransient<RentalsPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();
