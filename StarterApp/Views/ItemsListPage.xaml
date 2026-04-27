@@ -13,6 +13,10 @@
             FontAttributes="Bold" />
 
         <Button
+            Text="Create Item"
+            Clicked="OnCreateItemClicked" />
+
+        <Button
             Text="Load Items"
             Command="{Binding LoadItemsCommand}" />
 
