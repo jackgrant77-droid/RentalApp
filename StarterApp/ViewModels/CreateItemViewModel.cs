@@ -1,38 +1,51 @@
 using System.Windows.Input;
-using StarterApp.Database.Data.Repositories;
 using StarterApp.Database.Models;
+using StarterApp.Services;
 
 namespace StarterApp.ViewModels;
 
 public class CreateItemViewModel
 {
-    private readonly IItemRepository _itemRepository;
+    private readonly IApiService _apiService;
 
-    public string Title { get; set; }
-    public string Description { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public decimal DailyRate { get; set; }
-    public string Category { get; set; }
+    public string Category { get; set; } = string.Empty;
 
     public ICommand SaveCommand { get; }
 
-    public CreateItemViewModel(IItemRepository itemRepository)
+    public CreateItemViewModel(IApiService apiService)
     {
-        _itemRepository = itemRepository;
-        SaveCommand = new Command(async () => await SaveItemAsync());
+        _apiService = apiService;
+        SaveCommand = new Command(async () => await SaveAsync());
     }
 
-    private async Task SaveItemAsync()
+    private async Task SaveAsync()
     {
-        var item = new Item
+        try
         {
-            Title = Title,
-            Description = Description,
-            DailyRate = DailyRate,
-            Category = Category
-        };
+            var item = new Item
+            {
+                Title = Title,
+                Description = Description,
+                DailyRate = DailyRate,
+                Category = Category
+            };
 
-        await _itemRepository.AddAsync(item);
+            await _apiService.CreateItemAsync(item);
 
-        await Application.Current.MainPage.DisplayAlert("Success", "Item created!", "OK");
+            await Application.Current.MainPage.DisplayAlert(
+                "Success",
+                "Item created via API!",
+                "OK");
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert(
+                "Error",
+                ex.Message,
+                "OK");
+        }
     }
 }
