@@ -46,6 +46,7 @@ public static class MauiProgram
         builder.Services.AddScoped<IItemRepository, ItemRepository>();
         builder.Services.AddTransient<ItemsListViewModel>();
         builder.Services.AddTransient<ItemsListPage>();
+        builder.Services.AddTransient<CreateItemViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug();
