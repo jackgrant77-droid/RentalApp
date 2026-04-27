@@ -47,6 +47,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ItemsListViewModel>();
         builder.Services.AddTransient<ItemsListPage>();
         builder.Services.AddTransient<CreateItemViewModel>();
+        builder.Services.AddTransient<CreateItemPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();
