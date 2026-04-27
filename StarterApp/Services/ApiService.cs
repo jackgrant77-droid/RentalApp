@@ -17,6 +17,17 @@ public class ApiService : IApiService
         _httpClient.BaseAddress = new Uri(BaseUrl);
     }
 
+    private async Task AddAuthHeaderAsync()
+    {
+        var token = await SecureStorage.GetAsync("jwt_token");
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
+        }
+    }
+
     public async Task<List<Item>> GetItemsAsync()
     {
         var response = await _httpClient.GetAsync("/items");
@@ -35,6 +46,8 @@ public class ApiService : IApiService
 
     public async Task<Item> CreateItemAsync(Item item)
     {
+        await AddAuthHeaderAsync();
+
         var json = JsonSerializer.Serialize(item);
 
         var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -53,6 +66,8 @@ public class ApiService : IApiService
 
     public async Task RequestRentalAsync(int itemId, DateTime startDate, DateTime endDate)
     {
+        await AddAuthHeaderAsync();
+
         var request = new
         {
             itemId,
