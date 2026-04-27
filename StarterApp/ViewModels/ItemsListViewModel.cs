@@ -1,33 +1,43 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using StarterApp.Database.Data.Repositories;
 using StarterApp.Database.Models;
+using StarterApp.Services;
 
 namespace StarterApp.ViewModels;
 
 public class ItemsListViewModel
 {
-    private readonly IItemRepository _itemRepository;
+    private readonly IApiService _apiService;
 
     public ObservableCollection<Item> Items { get; } = new();
 
     public ICommand LoadItemsCommand { get; }
 
-    public ItemsListViewModel(IItemRepository itemRepository)
+    public ItemsListViewModel(IApiService apiService)
     {
-        _itemRepository = itemRepository;
+        _apiService = apiService;
         LoadItemsCommand = new Command(async () => await LoadItemsAsync());
     }
 
     private async Task LoadItemsAsync()
     {
-        Items.Clear();
-
-        var items = await _itemRepository.GetAllAsync();
-
-        foreach (var item in items)
+        try
         {
-            Items.Add(item);
+            Items.Clear();
+
+            var items = await _apiService.GetItemsAsync();
+
+            foreach (var item in items)
+            {
+                Items.Add(item);
+            }
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert(
+                "Error",
+                $"Could not load items: {ex.Message}",
+                "OK");
         }
     }
 }
