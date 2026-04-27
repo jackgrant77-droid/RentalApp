@@ -66,6 +66,10 @@
                 <StackLayout Grid.Row="3" Spacing="15">
 
                     <Button
+                        Text="View Rentals"
+                        Clicked="OnViewRentalsClicked" />
+
+                    <Button
                         Text="View Items"
                         Clicked="OnViewItemsClicked" />
 
