@@ -50,6 +50,8 @@ public static class MauiProgram
         builder.Services.AddTransient<CreateItemPage>();
         builder.Services.AddScoped<IRentalRepository, RentalRepository>();
         builder.Services.AddScoped<IRentalService, RentalService>();
+        builder.Services.AddTransient<RequestRentalViewModel>();
+        builder.Services.AddTransient<RequestRentalPage>();
         
 
 #if DEBUG
