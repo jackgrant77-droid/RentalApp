@@ -85,15 +85,14 @@ public class ApiService : IApiService
             PropertyNameCaseInsensitive = true
         });
 
-      return new Item
-    {
-        Id = dto?.Id ?? 0,
-        Title = dto?.Title ?? item.Title,
-        Description = dto?.Description ?? item.Description,
-        DailyRate = dto?.DailyRate ?? item.DailyRate,
-        Category = dto?.Category ?? item.Category
-    };
-
+        return new Item
+        {
+            Id = dto?.Id ?? 0,
+            Title = dto?.Title ?? item.Title,
+            Description = dto?.Description ?? item.Description,
+            DailyRate = dto?.DailyRate ?? item.DailyRate,
+            Category = dto?.Category ?? item.Category
+        };
     }
 
     public async Task RequestRentalAsync(int itemId, DateTime startDate, DateTime endDate)
@@ -119,27 +118,82 @@ public class ApiService : IApiService
         }
     }
 
+    public async Task<List<Rental>> GetOutgoingRentalsAsync()
+    {
+        await AddAuthHeaderAsync();
+
+        var response = await _httpClient.GetAsync("/rentals/outgoing");
+        var json = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(json);
+        }
+
+        var result = JsonSerializer.Deserialize<ApiRentalsResponse>(json, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
+        return result?.Rentals.Select(dto => new Rental
+        {
+            Id = dto.Id,
+            ItemId = dto.ItemId,
+            Item = new Item
+            {
+                Id = dto.ItemId,
+                Title = dto.ItemTitle
+            },
+            StartDate = dto.StartDate,
+            EndDate = dto.EndDate,
+            TotalPrice = dto.TotalPrice,
+            Status = Enum.TryParse<RentalStatus>(
+                dto.Status.Replace(" ", ""),
+                out var status)
+                    ? status
+                    : RentalStatus.Requested
+        }).ToList() ?? new List<Rental>();
+    }
+
     private class ApiItemsResponse
     {
         public List<ApiItemDto> Items { get; set; } = new();
     }
 
-
     private class ApiItemDto
     {
+        public int Id { get; set; }
 
-    public int Id { get; set; }
+        public string Title { get; set; } = string.Empty;
 
-    public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
 
-    public string Description { get; set; } = string.Empty;
+        public decimal DailyRate { get; set; }
 
-    public decimal DailyRate { get; set; }
+        public string Category { get; set; } = string.Empty;
 
-    public string Category { get; set; } = string.Empty;
-
-    public int OwnerId { get; set; }
-
+        public int OwnerId { get; set; }
     }
 
+    private class ApiRentalsResponse
+    {
+        public List<ApiRentalDto> Rentals { get; set; } = new();
+    }
+
+    private class ApiRentalDto
+    {
+        public int Id { get; set; }
+
+        public int ItemId { get; set; }
+
+        public string ItemTitle { get; set; } = string.Empty;
+
+        public DateTime StartDate { get; set; }
+
+        public DateTime EndDate { get; set; }
+
+        public string Status { get; set; } = string.Empty;
+
+        public decimal TotalPrice { get; set; }
+    }
 }
