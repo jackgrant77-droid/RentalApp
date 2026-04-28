@@ -42,7 +42,7 @@ public partial class ItemsListPage : ContentPage
             if (viewModel is not null)
             {
                 viewModel.ItemId = item.Id;
-                viewModel.DailyRate = item.DailyRate;
+                
             }
 
             await Navigation.PushAsync(_requestRentalPage);
