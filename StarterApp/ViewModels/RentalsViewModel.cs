@@ -12,6 +12,7 @@ public class RentalsViewModel
    {
        _apiService = apiService;
        LoadRentalsCommand = new Command(async () => await LoadRentalsAsync());
+       _ = LoadRentalsAsync();
    }
    private async Task LoadRentalsAsync()
    {
