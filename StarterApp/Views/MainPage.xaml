@@ -86,6 +86,10 @@
                         Command="{Binding NavigateToUserListCommand}"
                         IsVisible="{Binding IsAdmin}" />
 
+                    <Button
+                        Text="Find Nearby Items"
+                        Clicked="OnFindNearbyClicked" />
+
                 </StackLayout>
             </Grid>
         </ScrollView>
