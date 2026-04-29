@@ -13,5 +13,8 @@ public interface IApiService
     Task<Item> CreateItemAsync(Item item);
 
     Task RequestRentalAsync(int itemId, DateTime startDate, DateTime endDate);
+
+    Task UpdateRentalStatusAsync(int rentalId, string status);
+    
 }
 

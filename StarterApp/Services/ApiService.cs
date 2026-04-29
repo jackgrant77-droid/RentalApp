@@ -126,9 +126,26 @@ public class ApiService : IApiService
         };
     }
 
-    // =========================
-    // REQUEST RENTAL
-    // =========================
+   public async Task UpdateRentalStatusAsync(int rentalId, string status)
+{
+    await AddAuthHeaderAsync();
+
+    var request = new
+    {
+        status
+    };
+
+    var json = JsonSerializer.Serialize(request);
+    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+    var response = await _httpClient.PatchAsync($"/rentals/{rentalId}/status", content);
+    var responseJson = await response.Content.ReadAsStringAsync();
+
+    if (!response.IsSuccessStatusCode)
+    {
+        throw new Exception(responseJson);
+    }
+}
     public async Task RequestRentalAsync(int itemId, DateTime startDate, DateTime endDate)
     {
         await AddAuthHeaderAsync();
@@ -152,9 +169,6 @@ public class ApiService : IApiService
         }
     }
 
-    // =========================
-    // GET OUTGOING RENTALS
-    // =========================
     public async Task<List<Rental>> GetOutgoingRentalsAsync()
     {
         await AddAuthHeaderAsync();
@@ -192,10 +206,8 @@ public class ApiService : IApiService
         }).ToList() ?? new List<Rental>();
     }
 
-    // =========================
-    // DTO CLASSES
-    // =========================
-    private class ApiItemsResponse
+  
+        private class ApiItemsResponse
     {
         public List<ApiItemDto> Items { get; set; } = new();
     }
