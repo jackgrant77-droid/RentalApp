@@ -21,11 +21,25 @@
                 <DataTemplate>
                     <Frame Padding="12" Margin="0,5">
                         <VerticalStackLayout Spacing="6">
+
                             <Label Text="{Binding Item.Title}" FontAttributes="Bold" />
                             <Label Text="{Binding Status}" />
                             <Label Text="{Binding StartDate, StringFormat='Start: {0:dd/MM/yyyy}'}" />
                             <Label Text="{Binding EndDate, StringFormat='End: {0:dd/MM/yyyy}'}" />
                             <Label Text="{Binding TotalPrice, StringFormat='Total: £{0:F2}'}" />
+
+                            <HorizontalStackLayout Spacing="10">
+                                <Button
+                                    Text="Approve"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ApproveRentalCommand}"
+                                    CommandParameter="{Binding .}" />
+
+                                <Button
+                                    Text="Reject"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RejectRentalCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </HorizontalStackLayout>
+
                         </VerticalStackLayout>
                     </Frame>
                 </DataTemplate>

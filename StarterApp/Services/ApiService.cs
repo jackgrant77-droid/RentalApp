@@ -173,7 +173,7 @@ public class ApiService : IApiService
     {
         await AddAuthHeaderAsync();
 
-        var response = await _httpClient.GetAsync("/rentals/outgoing");
+        var response = await _httpClient.GetAsync("/rentals/incoming");
         var json = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)
