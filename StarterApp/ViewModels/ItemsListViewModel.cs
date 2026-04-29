@@ -19,7 +19,7 @@ public class ItemsListViewModel
         LoadItemsCommand = new Command(async () => await LoadItemsAsync());
     }
 
-    private async Task LoadItemsAsync()
+    public async Task LoadItemsAsync()
     {
         try
         {
