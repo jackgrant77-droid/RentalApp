@@ -14,6 +14,8 @@ public class RentalsViewModel
     public ICommand LoadRentalsCommand { get; }
     public ICommand ApproveRentalCommand { get; }
     public ICommand RejectRentalCommand { get; }
+    public ICommand MarkReturnedCommand { get; }
+    public ICommand MarkCompletedCommand { get; }
 
     public RentalsViewModel(IApiService apiService)
     {
@@ -22,31 +24,51 @@ public class RentalsViewModel
         LoadRentalsCommand = new Command(async () => await LoadRentalsAsync());
         ApproveRentalCommand = new Command<Rental>(async rental => await UpdateStatusAsync(rental, "Approved"));
         RejectRentalCommand = new Command<Rental>(async rental => await UpdateStatusAsync(rental, "Rejected"));
+        MarkReturnedCommand = new Command<Rental>(async rental => await UpdateStatusAsync(rental, "Returned"));
+        MarkCompletedCommand = new Command<Rental>(async rental => await UpdateStatusAsync(rental, "Completed"));
+
 
         _ = LoadRentalsAsync();
     }
 
     private async Task LoadRentalsAsync()
+
+{
+
+    try
+
     {
-        try
-        {
-            Rentals.Clear();
 
-            var rentals = await _apiService.GetOutgoingRentalsAsync();
+        Rentals.Clear();
 
-            foreach (var rental in rentals)
-            {
-                Rentals.Add(rental);
-            }
-        }
-        catch (Exception ex)
+        var rentals = await _apiService.GetOutgoingRentalsAsync();
+
+        foreach (var rental in rentals)
+
         {
-            await Application.Current.MainPage.DisplayAlert(
-                "Error",
-                ex.Message,
-                "OK");
+
+            Rentals.Add(rental);
+
         }
+
     }
+
+    catch (Exception ex)
+
+    {
+
+        await Application.Current.MainPage.DisplayAlert(
+
+            "Error",
+
+            ex.Message,
+
+            "OK");
+
+    }
+
+}
+ 
 
     private async Task UpdateStatusAsync(Rental? rental, string status)
     {

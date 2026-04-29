@@ -173,7 +173,7 @@ public class ApiService : IApiService
     {
         await AddAuthHeaderAsync();
 
-        var response = await _httpClient.GetAsync("/rentals/incoming");
+        var response = await _httpClient.GetAsync("/rentals/outgoing");
         var json = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)
@@ -205,6 +205,48 @@ public class ApiService : IApiService
                     : RentalStatus.Requested
         }).ToList() ?? new List<Rental>();
     }
+
+
+    public async Task SubmitReviewAsync(int rentalId, int rating, string comment)
+{
+   await AddAuthHeaderAsync();
+   var request = new
+   {
+       rentalId,
+       rating,
+       comment
+   };
+   var json = JsonSerializer.Serialize(request);
+   var content = new StringContent(json, Encoding.UTF8, "application/json");
+   var response = await _httpClient.PostAsync("/reviews", content);
+   var responseJson = await response.Content.ReadAsStringAsync();
+   if (!response.IsSuccessStatusCode)
+   {
+       throw new Exception(responseJson);
+   }
+}
+public async Task<List<Review>> GetItemReviewsAsync(int itemId)
+{
+   var response = await _httpClient.GetAsync($"/items/{itemId}/reviews");
+   var json = await response.Content.ReadAsStringAsync();
+   if (!response.IsSuccessStatusCode)
+   {
+       throw new Exception(json);
+   }
+   var result = JsonSerializer.Deserialize<ApiReviewsResponse>(json, new JsonSerializerOptions
+   {
+       PropertyNameCaseInsensitive = true
+   });
+   return result?.Reviews.Select(dto => new Review
+   {
+       Id = dto.Id,
+       ReviewerId = dto.ReviewerId,
+       ReviewerName = dto.ReviewerName,
+       Rating = dto.Rating,
+       Comment = dto.Comment,
+       CreatedAt = dto.CreatedAt
+   }).ToList() ?? new List<Review>();
+}
 
   
         private class ApiItemsResponse
@@ -253,5 +295,21 @@ public class ApiService : IApiService
         public DateTime EndDate { get; set; }
         public string Status { get; set; } = string.Empty;
         public decimal TotalPrice { get; set; }
+    }
+
+    private class ApiReviewsResponse
+{
+   public List<ApiReviewDto> Reviews { get; set; } = new();
+}
+     class ApiReviewDto
+    {
+
+        public int Id { get; set; }
+        public int ReviewerId { get; set; }
+        public string ReviewerName { get; set; } = string.Empty;
+        public int Rating { get; set; }
+        public string Comment { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+
     }
 }

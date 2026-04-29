@@ -15,6 +15,8 @@ public interface IApiService
     Task RequestRentalAsync(int itemId, DateTime startDate, DateTime endDate);
 
     Task UpdateRentalStatusAsync(int rentalId, string status);
+    Task SubmitReviewAsync(int rentalId, int rating, string comment);
+    Task<List<Review>> GetItemReviewsAsync(int itemId);
     
 }
 
