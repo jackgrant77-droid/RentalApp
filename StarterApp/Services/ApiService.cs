@@ -29,6 +29,7 @@ public class ApiService : IApiService
                 new AuthenticationHeaderValue("Bearer", token);
         }
     }
+        
 
     public async Task<List<Item>> GetItemsAsync()
     {
@@ -55,6 +56,36 @@ public class ApiService : IApiService
         }).ToList() ?? new List<Item>();
     }
 
+ 
+    public async Task<List<Item>> GetNearbyItemsAsync(double latitude, double longitude, double radiusKm)
+    {
+        var url = $"/items/nearby?lat={latitude}&lon={longitude}&radius={radiusKm}";
+
+        var response = await _httpClient.GetAsync(url);
+        var json = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(json);
+        }
+
+        var result = JsonSerializer.Deserialize<ApiNearbyItemsResponse>(json, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
+        return result?.Items.Select(dto => new Item
+        {
+            Id = dto.Id,
+            Title = dto.Title,
+            Description = dto.Description,
+            DailyRate = dto.DailyRate,
+            Category = dto.Category,
+            Latitude = dto.Latitude,
+            Longitude = dto.Longitude
+        }).ToList() ?? new List<Item>();
+    }
+
     public async Task<Item> CreateItemAsync(Item item)
     {
         await AddAuthHeaderAsync();
@@ -65,8 +96,8 @@ public class ApiService : IApiService
             description = item.Description,
             dailyRate = item.DailyRate,
             categoryId = 1,
-            latitude = 55.9533,
-            longitude = -3.1883
+            latitude = item.Latitude,
+            longitude = item.Longitude
         };
 
         var json = JsonSerializer.Serialize(request);
@@ -95,6 +126,9 @@ public class ApiService : IApiService
         };
     }
 
+    // =========================
+    // REQUEST RENTAL
+    // =========================
     public async Task RequestRentalAsync(int itemId, DateTime startDate, DateTime endDate)
     {
         await AddAuthHeaderAsync();
@@ -118,6 +152,9 @@ public class ApiService : IApiService
         }
     }
 
+    // =========================
+    // GET OUTGOING RENTALS
+    // =========================
     public async Task<List<Rental>> GetOutgoingRentalsAsync()
     {
         await AddAuthHeaderAsync();
@@ -155,6 +192,9 @@ public class ApiService : IApiService
         }).ToList() ?? new List<Rental>();
     }
 
+    // =========================
+    // DTO CLASSES
+    // =========================
     private class ApiItemsResponse
     {
         public List<ApiItemDto> Items { get; set; } = new();
@@ -163,16 +203,28 @@ public class ApiService : IApiService
     private class ApiItemDto
     {
         public int Id { get; set; }
-
         public string Title { get; set; } = string.Empty;
-
         public string Description { get; set; } = string.Empty;
-
         public decimal DailyRate { get; set; }
-
         public string Category { get; set; } = string.Empty;
-
         public int OwnerId { get; set; }
+    }
+
+    private class ApiNearbyItemsResponse
+    {
+        public List<ApiNearbyItemDto> Items { get; set; } = new();
+    }
+
+    private class ApiNearbyItemDto
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public decimal DailyRate { get; set; }
+        public string Category { get; set; } = string.Empty;
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public double Distance { get; set; }
     }
 
     private class ApiRentalsResponse
@@ -183,17 +235,11 @@ public class ApiService : IApiService
     private class ApiRentalDto
     {
         public int Id { get; set; }
-
         public int ItemId { get; set; }
-
         public string ItemTitle { get; set; } = string.Empty;
-
         public DateTime StartDate { get; set; }
-
         public DateTime EndDate { get; set; }
-
         public string Status { get; set; } = string.Empty;
-
         public decimal TotalPrice { get; set; }
     }
 }
