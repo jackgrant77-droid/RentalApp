@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="StarterApp.Views.NearbyItemsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Nearby Items">
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+
+        <Label
+            Text="Find Items Near Me"
+            FontSize="24"
+            FontAttributes="Bold" />
+
+        <Label Text="Radius (km)" />
+
+        <Entry
+            Keyboard="Numeric"
+            Text="{Binding RadiusKm}" />
+
+        <Button
+            Text="Find Nearby Items"
+            Command="{Binding FindNearbyCommand}" />
+
+        <CollectionView ItemsSource="{Binding NearbyItems}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="12" Margin="0,5">
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="{Binding Title}" FontAttributes="Bold" />
+                            <Label Text="{Binding Description}" />
+                            <Label Text="{Binding DailyRate, StringFormat='£{0:F2} per day'}" />
+                            <Label Text="{Binding Category}" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>
