@@ -38,6 +38,13 @@
                                     Text="Reject"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.RejectRentalCommand}"
                                     CommandParameter="{Binding .}" />
+
+                                <Button
+                                    Text="Leave Review"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ReviewRentalCommand}"
+                                    CommandParameter="{Binding .}" />
+
+
                             </HorizontalStackLayout>
 
                         </VerticalStackLayout>

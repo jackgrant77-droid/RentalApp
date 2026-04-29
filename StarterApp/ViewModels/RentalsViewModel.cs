@@ -16,6 +16,7 @@ public class RentalsViewModel
     public ICommand RejectRentalCommand { get; }
     public ICommand MarkReturnedCommand { get; }
     public ICommand MarkCompletedCommand { get; }
+    public ICommand ReviewRentalCommand { get; }
 
     public RentalsViewModel(IApiService apiService)
     {
@@ -26,49 +27,32 @@ public class RentalsViewModel
         RejectRentalCommand = new Command<Rental>(async rental => await UpdateStatusAsync(rental, "Rejected"));
         MarkReturnedCommand = new Command<Rental>(async rental => await UpdateStatusAsync(rental, "Returned"));
         MarkCompletedCommand = new Command<Rental>(async rental => await UpdateStatusAsync(rental, "Completed"));
-
+        ReviewRentalCommand = new Command<Rental>(async rental => await ReviewRentalAsync(rental));
 
         _ = LoadRentalsAsync();
     }
 
     private async Task LoadRentalsAsync()
-
-{
-
-    try
-
     {
-
-        Rentals.Clear();
-
-        var rentals = await _apiService.GetOutgoingRentalsAsync();
-
-        foreach (var rental in rentals)
-
+        try
         {
+            Rentals.Clear();
 
-            Rentals.Add(rental);
+            var rentals = await _apiService.GetOutgoingRentalsAsync();
 
+            foreach (var rental in rentals)
+            {
+                Rentals.Add(rental);
+            }
         }
-
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert(
+                "Error",
+                ex.Message,
+                "OK");
+        }
     }
-
-    catch (Exception ex)
-
-    {
-
-        await Application.Current.MainPage.DisplayAlert(
-
-            "Error",
-
-            ex.Message,
-
-            "OK");
-
-    }
-
-}
- 
 
     private async Task UpdateStatusAsync(Rental? rental, string status)
     {
@@ -95,5 +79,18 @@ public class RentalsViewModel
                 ex.Message,
                 "OK");
         }
+    }
+
+    private async Task ReviewRentalAsync(Rental? rental)
+    {
+        if (rental is null)
+        {
+            return;
+        }
+
+        await Application.Current.MainPage.DisplayAlert(
+            "Review",
+            $"Review feature selected for rental {rental.Id}",
+            "OK");
     }
 }
