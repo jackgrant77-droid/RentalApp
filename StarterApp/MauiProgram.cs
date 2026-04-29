@@ -58,6 +58,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<ILocationService, LocationService>();
         builder.Services.AddTransient<NearbyItemsViewModel>();
         builder.Services.AddTransient<NearbyItemsPage>();
+        builder.Services.AddTransient<CreateReviewViewModel>();
+        builder.Services.AddTransient<CreateReviewPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

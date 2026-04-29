@@ -16,7 +16,7 @@ public class RentalsViewModel
     public ICommand RejectRentalCommand { get; }
     public ICommand MarkReturnedCommand { get; }
     public ICommand MarkCompletedCommand { get; }
-    public ICommand ReviewRentalCommand { get; }
+    public ICommand ReviewRentalCommand { get; set; }
 
     public RentalsViewModel(IApiService apiService)
     {
@@ -27,7 +27,6 @@ public class RentalsViewModel
         RejectRentalCommand = new Command<Rental>(async rental => await UpdateStatusAsync(rental, "Rejected"));
         MarkReturnedCommand = new Command<Rental>(async rental => await UpdateStatusAsync(rental, "Returned"));
         MarkCompletedCommand = new Command<Rental>(async rental => await UpdateStatusAsync(rental, "Completed"));
-        ReviewRentalCommand = new Command<Rental>(async rental => await ReviewRentalAsync(rental));
 
         _ = LoadRentalsAsync();
     }
@@ -79,18 +78,5 @@ public class RentalsViewModel
                 ex.Message,
                 "OK");
         }
-    }
-
-    private async Task ReviewRentalAsync(Rental? rental)
-    {
-        if (rental is null)
-        {
-            return;
-        }
-
-        await Application.Current.MainPage.DisplayAlert(
-            "Review",
-            $"Review feature selected for rental {rental.Id}",
-            "OK");
     }
 }
