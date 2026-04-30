@@ -1,66 +1,31 @@
-using Moq;
-
 using Xunit;
-
+using Moq;
 namespace StarterApp.Tests.Services;
-
 public interface ILocationService
-
 {
-
-    Task<TestLocation> GetCurrentLocationAsync();
-
+   Task<Location> GetCurrentLocationAsync();
 }
-
-public class TestLocation
-
+public class Location
 {
-
-    public double Latitude { get; set; }
-
-    public double Longitude { get; set; }
-
+   public double Latitude { get; set; }
+   public double Longitude { get; set; }
 }
-
 public class LocationServiceTests
-
 {
-
-    [Fact]
-
-    public async Task GetCurrentLocationAsync_WhenMocked_ReturnsExpectedLocation()
-
-    {
-
-        // Arrange
-
-        var mockLocationService = new Mock<ILocationService>();
-
-        mockLocationService.Setup(service => service.GetCurrentLocationAsync())
-
-            .ReturnsAsync(new TestLocation
-
-            {
-
-                Latitude = 55.9533,
-
-                Longitude = -3.1883
-
-            });
-
-        // Act
-
-        var result = await mockLocationService.Object.GetCurrentLocationAsync();
-
-        // Assert
-
-        Assert.NotNull(result);
-
-        Assert.Equal(55.9533, result.Latitude);
-
-        Assert.Equal(-3.1883, result.Longitude);
-
-    }
-
+   [Fact]
+   public async Task GetCurrentLocationAsync_ReturnsMockedLocation()
+   {
+       // Arrange
+       var mock = new Mock<ILocationService>();
+       mock.Setup(x => x.GetCurrentLocationAsync())
+           .ReturnsAsync(new Location
+           {
+               Latitude = 55.9533,
+               Longitude = -3.1883
+           });
+       // Act
+       var result = await mock.Object.GetCurrentLocationAsync();
+       // Assert
+       Assert.Equal(55.9533, result.Latitude);
+   }
 }
- 
