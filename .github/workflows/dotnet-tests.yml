@@ -1,46 +1,46 @@
-name: Run .NET Tests
+  name: Run .NET Tests
 
-on:
+  on:
 
-  push:
+    push:
 
-    branches:
+      branches:
 
-      - main
+        - main
 
-      - testing
+        - testing
 
-  pull_request:
+    pull_request:
 
-    branches:
+      branches:
 
-      - main
+        - main
 
-jobs:
+  jobs:
 
-  test:
+    test:
 
-    runs-on: ubuntu-latest
+      runs-on: ubuntu-latest
 
-    steps:
+      steps:
 
-      - name: Checkout repository
+        - name: Checkout repository
 
-        uses: actions/checkout@v4
+          uses: actions/checkout@v4
 
-      - name: Setup .NET
+        - name: Setup .NET
 
-        uses: actions/setup-dotnet@v4
+          uses: actions/setup-dotnet@v4
 
-        with:
+          with:
 
-          dotnet-version: '10.0.x'
+            dotnet-version: '10.0.x'
 
-      - name: Restore dependencies
+        - name: Restore dependencies
 
-        run: dotnet restore StarterApp.Tests/StarterApp.Tests.csproj
+          run: dotnet restore StarterApp.Tests/StarterApp.Tests.csproj
 
-      - name: Run tests
+        - name: Run tests
 
-        run: dotnet test StarterApp.Tests/StarterApp.Tests.csproj --no-restore
- 
+          run: dotnet test StarterApp.Tests/StarterApp.Tests.csproj --no-restore
+  

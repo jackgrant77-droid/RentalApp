@@ -29,3 +29,4 @@ public class LocationServiceTests
        Assert.Equal(55.9533, result.Latitude);
    }
 }
+ 
